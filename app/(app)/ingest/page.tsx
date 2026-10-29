@@ -193,32 +193,40 @@ function SingleEntryTab() {
               <div className="flex flex-wrap items-center gap-2">
                 <ChannelBadge channel={result.channel} />
                 <SentimentBadge sentiment={result.sentiment} />
-                <span className="text-xs text-slate-500">
-                  Score: {result.sentimentScore > 0 ? '+' : ''}
-                  {result.sentimentScore}
-                </span>
+                {result.sentimentScore !== undefined && result.sentimentScore !== null && (
+                  <span className="text-xs text-slate-500">
+                    Score: {result.sentimentScore > 0 ? '+' : ''}
+                    {result.sentimentScore}
+                  </span>
+                )}
               </div>
               <div>
                 <p className="text-xs font-medium text-slate-500">Detected Themes</p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {result.themes.map((t) => (
-                    <span
-                      key={t.id}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1 text-sm font-medium text-slate-700"
-                    >
+                  {(result.themes ?? []).length > 0 ? (
+                    (result.themes ?? []).map((t) => (
                       <span
-                        className="h-2.5 w-2.5 rounded-full"
-                        style={{ backgroundColor: t.color }}
-                      />
-                      {t.name}
-                    </span>
-                  ))}
+                        key={t.id}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1 text-sm font-medium text-slate-700"
+                      >
+                        <span
+                          className="h-2.5 w-2.5 rounded-full"
+                          style={{ backgroundColor: t.color || '#94a3b8' }}
+                        />
+                        {t.name}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs text-slate-400">Classifying themes in background...</span>
+                  )}
                 </div>
               </div>
-              <div>
-                <p className="text-xs font-medium text-slate-500">Feature Area</p>
-                <p className="mt-1 text-sm text-slate-700">{result.featureArea}</p>
-              </div>
+              {result.featureArea && (
+                <div>
+                  <p className="text-xs font-medium text-slate-500">Feature Area</p>
+                  <p className="mt-1 text-sm text-slate-700">{result.featureArea}</p>
+                </div>
+              )}
             </div>
           )}
         </CardContent>
