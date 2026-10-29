@@ -18,8 +18,12 @@ interface SentimentBadgeProps {
 }
 
 export function SentimentBadge({ sentiment, showIcon = true, className }: SentimentBadgeProps) {
-  const config = sentimentConfig[sentiment];
-  const Icon = config.icon;
+  const config = sentimentConfig[sentiment] ?? {
+    label: sentiment || 'Neutral',
+    className: 'text-amber-700 bg-amber-50 border-amber-200',
+    icon: Meh,
+  };
+  const Icon = config.icon || Meh;
   return (
     <span
       className={cn(
@@ -28,7 +32,7 @@ export function SentimentBadge({ sentiment, showIcon = true, className }: Sentim
         className
       )}
     >
-      {showIcon && <Icon className="h-3 w-3" />}
+      {showIcon && Icon && <Icon className="h-3 w-3" />}
       {config.label}
     </span>
   );
