@@ -110,3 +110,7 @@ project-loop-main/
 - [x] **README & Documentation**: Setup instructions, demo credentials, and tech stack details.
 - [x] **Seeded Database**: 150+ realistic customer feedback items across multiple channels.
 - [x] **Multi-Role RBAC**: Admin, Analyst, and Viewer permissions enforced.
+- [x] **Demo Video**: Walkthrough video included. Watch the [Demo Video](./public/assets/demo-video.mp4) directly or play it below:
+
+<video src="./public/assets/demo-video.mp4" controls width="100%"></video>
+

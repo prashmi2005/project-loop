@@ -26,6 +26,7 @@ import type { FeedbackItem } from '@/types';
 export default function DashboardPage() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<any>({
     totalFeedback: 0,
     newThisWeek: 0,
@@ -44,10 +45,21 @@ export default function DashboardPage() {
         const res = await fetch('/api/dashboard/stats');
         if (res.ok) {
           const data = await res.json();
-          setStats(data);
+          // Ensure arrays are always arrays to avoid runtime crashes
+          setStats({
+            ...data,
+            recentFeedback: Array.isArray(data.recentFeedback) ? data.recentFeedback : [],
+            themes: Array.isArray(data.themes) ? data.themes : [],
+            volumeOverTime: Array.isArray(data.volumeOverTime) ? data.volumeOverTime : [],
+            sentimentBreakdown: data.sentimentBreakdown ?? { positive: 0, neutral: 0, negative: 0 },
+          });
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          setError(errData.error || `Failed to load stats (${res.status})`);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to load dashboard statistics", err);
+        setError(err?.message || 'Network error loading dashboard');
       } finally {
         setLoading(false);
       }
@@ -57,6 +69,16 @@ export default function DashboardPage() {
 
   if (loading) {
     return <LoadingSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+        <AlertCircle className="h-10 w-10 text-rose-500" />
+        <p className="text-slate-700 font-medium">Failed to load dashboard</p>
+        <p className="text-sm text-slate-400">{error}</p>
+      </div>
+    );
   }
 
   return (
